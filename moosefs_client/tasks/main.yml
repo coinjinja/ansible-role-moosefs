@@ -1,0 +1,14 @@
+#mfsclient
+- name: install mfs client packages
+  apt: name=moosefs-client state=present
+
+- name: create mfs client mountpoint directory
+  file: path={{ moosefs.mfsmount }} owner=daemon group=daemon state=directory mode=0755
+
+- name: mount moosefs
+  mount:
+    name: "{{ moosefs.mfsmount }}"
+    src: "mfsmount"
+    fstype: "fuse"
+    opts: "mfsmaster={{ moosefs.master }},mfsport=9421,_netdev"
+    state: mounted

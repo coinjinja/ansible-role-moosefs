@@ -1,0 +1,31 @@
+---
+- name: install moosefs-chunkserver packages
+  apt: name=moosefs-chunkserver state=present
+
+- name: create mfshdd directories
+  file: path={{ moosefs.mfshdd }} owner=mfs group=mfs state=directory mode=0755
+
+# - name: chown {{ moosefs.mfshdd }} to mfs.mfs
+#   file: path={{ moosefs.mfshdd }} owner=mfs group=mfs state=directory recurse=yes
+
+- name: enable moosefs-chunkserver
+  template: src=moosefs-chunkserver.j2 dest=/etc/default/moosefs-chunkserver owner=root group=root mode=0644
+
+- name: copy the moosefs-chunkserver configurations
+  template: src={{ item }}.j2 dest=/etc/mfs/{{ item }} owner=root group=root mode=0644
+  with_items:
+    - mfschunkserver.cfg
+    - mfshdd.cfg
+  notify: restart moosefs-chunkserver
+
+- name: start and enable moosefs-chunkserver
+  service: name=moosefs-chunkserver enabled=yes state=started
+
+- name: .medaid file exists?
+  stat: path={{ moosefs.mfshdd }}/.metaid
+  register: metaid_file
+
+# Sometime chunk service can not start after host re-build and mounted with
+# old chunk disk. Delete metaid file will fix it.
+- debug: msg="If server appeared in Disconnected Chunk Servers, you may want to remove {{ moosefs.mfshdd }}/.metaid and restart moosefs-chunkserver service"
+  when: metaid_file.stat.exists

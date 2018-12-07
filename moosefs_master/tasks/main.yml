@@ -1,0 +1,18 @@
+# mfsmaster
+- name: install moosefs-master packages
+  apt: name=moosefs-master state=present
+
+- name: copy the mfs master configurations
+  template: src={{ item }}.j2 dest=/etc/mfs/{{ item }} owner=root group=root mode=0644
+  with_items:
+    - mfsmaster.cfg
+    - mfsexports.cfg
+
+- name: start moosefs-master service
+  service: name=moosefs-master enabled=yes state=started
+
+- name: install moosefs-cgiserv package
+  apt: name=moosefs-cgiserv state=present
+
+- name: start moosefs-cgiserv service
+  service: name=moosefs-cgiserv enabled=yes state=started

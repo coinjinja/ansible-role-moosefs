@@ -1,0 +1,3 @@
+---
+- name: restart moosefs-chunkserver
+  service: name=moosefs-chunkserver state=restarted

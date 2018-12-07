@@ -1,0 +1,12 @@
+---
+- name: install moosefs-metalogger package
+  apt: name=moosefs-metalogger state=present
+
+- name: copy the moosefs-metalogger configurations
+  template: src={{ item }}.j2 dest=/etc/mfs/{{ item }} owner=root group=root mode=0644
+  with_items:
+    - mfsmetalogger.cfg
+  notify: restart moosefs-metalogger
+
+- name: start moosefs-metalogger
+  service: name=moosefs-metalogger enabled=yes state=started

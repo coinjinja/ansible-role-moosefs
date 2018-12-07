@@ -1,0 +1,17 @@
+---
+- name: add mfs apt repo
+  template:
+    src: moosefs.list.j2
+    dest: '/etc/apt/sources.list.d/moosefs.list'
+    owner: root
+    group: root
+    mode: 0644
+  register: mfs_repo
+
+- name: add apt key
+  apt_key: url=http://ppa.moosefs.com/moosefs-3/apt/moosefs.key state=present
+
+- name: apt-get update when repo changed
+  apt:
+    update_cache: yes
+  when: mfs_repo.changed

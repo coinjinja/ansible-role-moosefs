@@ -1,0 +1,16 @@
+---
+dependencies: []
+
+galaxy_info:
+  author: humiaozuzu
+  description: MooseFS roles
+  company: "Coinjinja"
+  license: "license (BSD, MIT)"
+  min_ansible_version: 1.8
+  platforms:
+    - name: Ubuntu
+      versions:
+      - trusty
+      - xenial
+  galaxy_tags:
+    - moosefs
